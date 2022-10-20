@@ -16,7 +16,7 @@ def calc(num_1: float, num_2: float, command: str) -> tp.Union[float, str]:
     if command == "-":
         return num_1 - num_2
     else:
-        return f"Неизвестный оператор: {command!r}."
+        return f"Неизвестный оператор: {command!r}"
 
 
 def change_base(num: int, base: int) -> str:
