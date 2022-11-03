@@ -1,32 +1,24 @@
 import math
 import typing as tp
 
-"""
-- Возможность ввода всей цепочки операций целиком и ее решение, 
-если она введена корректно. Цепочка может содержать скобки (ДЛЯ ТЕХ, У КОГО ПОЛУЧИЛИСЬ 
-ВСЕ ОСТАЛЬНЫЕ ЧАСТИ ЗАДАНИЯ)
-
-Продемонстрируйте работу программы. Для этого реализуйте соответствующее меню.
-"""
-
 
 def calc(num_1: float, num_2: float, command: str) -> tp.Union[float, str]:
     if command == "+":
         return num_1 + num_2
     if command == "-":
         return num_1 - num_2
-    else:
-        return f"Неизвестный оператор: {command!r}"
+    return f"Неизвестный оператор: {command!r}"
 
 
 def change_base(num: int, base: int) -> str:
+    """Change base"""
     if num < 0 or base > 9 or base < 2:
         return "Некорректный формат ввода"
-    s = ""
+    string = ""
     while num > 0:
-        s += str(num % base)
+        string += str(num % base)
         num //= base
-    return s[::-1]
+    return string[::-1]
 
 
 def match_case_calc_unary(num_1: float, command: str) -> tp.Union[float, str]:  # type: ignore
