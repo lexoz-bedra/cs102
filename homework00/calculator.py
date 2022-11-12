@@ -5,17 +5,18 @@ import typing as tp
 def change_base(num: int, base: int) -> str:
     """Меняем систему счисления"""
     if num < 0:
-        return "Основание системы счисления должно быть неотрицательным!!"
-    if base > 9 or base < 2:
+        return "Переводимое число должно быть неотрицательным!!"
+    if not 2 <= base <= 9:
         return "Система счисления должна быть от 2 до 9!!"
-    string = ""
-    while num >= 0:
-        string += str(num % base)
+    final_number = ""
+    while num > 0:
+        final_number += str(int(num % base))
         num //= base
-    return string[::-1]
+    return final_number[::-1]
 
 
 def match_case_calc_unary(num_1: float, command: str) -> tp.Union[float, str]:  # type: ignore
+    """Унарные операции"""
     match command:
         case "sqr":
             return num_1**2
@@ -38,6 +39,7 @@ def match_case_calc_unary(num_1: float, command: str) -> tp.Union[float, str]:  
 
 
 def match_case_calc_binary(num_1: float, num_2: float, command: str) -> tp.Union[float, str]:  # type: ignore
+    """Бинарные операции"""
     match command:
         case "+":
             return num_1 + num_2
@@ -53,6 +55,18 @@ def match_case_calc_binary(num_1: float, num_2: float, command: str) -> tp.Union
             return num_1 - num_2
         case _:
             return f"Неизвестный оператор: {command!r}!!"
+
+
+def is_number(input_string: str) -> tp.Union[float, None]:
+    """Проверяем, является ли строка числом"""
+    if (
+            input_string.isdigit()
+            or (input_string[0] == "-" and input_string[1:].isdigit())
+            or (input_string.count(".") == 1 and input_string.replace(".", "").isdigit())
+            or (input_string[0] == "-" and input_string[1:].replace(".", "").isdigit() and input_string.count(".") == 1)
+    ):
+        return float(input_string)
+    return
 
 
 if __name__ == "__main__":
@@ -74,45 +88,30 @@ if __name__ == "__main__":
                 print("Спокойной ночи!!")
                 break
             if COMMAND in ["sqr", "sin", "cos", "tan", "ln", "lg"]:
-                n1 = input("Первое число > ")
-                if (
-                    n1.isdigit()
-                    or (n1[0] == "-" and n1[1:].isdigit())
-                    or (n1.count(".") == 1 and n1.replace(".", "").isdigit())
-                    or (n1[0] == "-" and n1[1:].replace(".", "").isdigit() and n1.count(".") == 1)
-                ):
-                    NUM_1 = float(n1)
-                else:
-                    print("Нужно было ввести число!!")
-                    continue
-                print(match_case_calc_unary(NUM_1, COMMAND))
+                n1 = input("Число > ")
+                NUM_1 = is_number(n1)
+                print(match_case_calc_unary(NUM_1, COMMAND)) if NUM_1 is not None else print("Нужно было ввести число!!")
             elif COMMAND in ["+", "-", "*", "/", "^"]:
                 n1 = input("Первое число > ")
-                if (
-                    n1.isdigit()
-                    or (n1[0] == "-" and n1[1:].isdigit())
-                    or (n1.count(".") == 1 and n1.replace(".", "").isdigit())
-                    or (n1[0] == "-" and n1[1:].replace(".", "").isdigit() and n1.count(".") == 1)
-                ):
-                    NUM_1 = float(n1)
-                else:
+                NUM_1 = is_number(n1)
+                if NUM_1 is None:
                     print("Нужно было ввести число!!")
                     continue
                 n2 = input("Второе число > ")
-                if (
-                    n2.isdigit()
-                    or (n2[0] == "-" and n2[1:].isdigit())
-                    or (n2.count(".") == 1 and n2.replace(".", "").isdigit())
-                    or (n2[0] == "-" and n2[1:].replace(".", "").isdigit() and n2.count(".") == 1)
-                ):
-                    NUM_2 = float(n2)
-                else:
+                NUM_2 = is_number(n2)
+                if NUM_2 is None:
                     print("Нужно было ввести число!!")
                     continue
                 print(match_case_calc_binary(NUM_1, NUM_2, COMMAND))
-            elif COMMAND == "change base":
-                NUM_1 = int(input("Число > "))
-                NUM_2 = int(input("Основание > "))
+            elif COMMAND == "#":
+                NUM_1 = is_number(input("Число > "))
+                if NUM_1 is None:
+                    print("Нужно было ввести число!!")
+                    continue
+                NUM_2 = is_number(input("Основание > "))
+                if NUM_2 is None:
+                    print("Нужно было ввести число!!")
+                    continue
                 print(change_base(NUM_1, NUM_2))
             else:
                 print("Нужно было ввести операцию!!")
