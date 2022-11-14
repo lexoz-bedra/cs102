@@ -60,13 +60,13 @@ def match_case_calc_binary(num_1: float, num_2: float, command: str) -> tp.Union
 def is_number(input_string: str) -> tp.Union[float, None]:
     """Проверяем, является ли строка числом"""
     if (
-            input_string.isdigit()
-            or (input_string[0] == "-" and input_string[1:].isdigit())
-            or (input_string.count(".") == 1 and input_string.replace(".", "").isdigit())
-            or (input_string[0] == "-" and input_string[1:].replace(".", "").isdigit() and input_string.count(".") == 1)
+        input_string.isdigit()
+        or (input_string[0] == "-" and input_string[1:].isdigit())
+        or (input_string.count(".") == 1 and input_string.replace(".", "").isdigit())
+        or (input_string[0] == "-" and input_string[1:].replace(".", "").isdigit() and input_string.count(".") == 1)
     ):
         return float(input_string)
-    return
+    return  # type: ignore
 
 
 if __name__ == "__main__":
@@ -90,7 +90,9 @@ if __name__ == "__main__":
             if COMMAND in ["sqr", "sin", "cos", "tan", "ln", "lg"]:
                 n1 = input("Число > ")
                 NUM_1 = is_number(n1)
-                print(match_case_calc_unary(NUM_1, COMMAND)) if NUM_1 is not None else print("Нужно было ввести число!!")
+                print(match_case_calc_unary(NUM_1, COMMAND)) if NUM_1 is not None else print(
+                    "Нужно было ввести число!!"
+                )
             elif COMMAND in ["+", "-", "*", "/", "^"]:
                 n1 = input("Первое число > ")
                 NUM_1 = is_number(n1)
@@ -112,6 +114,6 @@ if __name__ == "__main__":
                 if NUM_2 is None:
                     print("Нужно было ввести число!!")
                     continue
-                print(change_base(NUM_1, NUM_2))
+                print(change_base(int(NUM_1), int(NUM_2)))
             else:
                 print("Нужно было ввести операцию!!")
