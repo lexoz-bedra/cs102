@@ -6,6 +6,8 @@ def change_base(num: int, base: int) -> str:
     """Меняем систему счисления"""
     if num < 0:
         return "Переводимое число должно быть неотрицательным!!"
+    if num == 0:
+        return "0"
     if not 2 <= base <= 9:
         return "Система счисления должна быть от 2 до 9!!"
     final_number = ""
