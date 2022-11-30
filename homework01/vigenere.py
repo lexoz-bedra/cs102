@@ -1,3 +1,6 @@
+"""vigenere"""
+
+
 def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     """
     Encrypts plaintext using a Vigenere cipher.
@@ -8,22 +11,26 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     >>> encrypt_vigenere("ATTACKATDAWN", "LEMON")
     'LXFOPVEFRNHR'
     """
-    alph_caps = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
-    alph_small = [chr(i) for i in range(ord('a'), ord('z') + 1)]
+    alph_caps = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
+    alph_small = [chr(i) for i in range(ord("a"), ord("z") + 1)]
 
-    new_key = keyword
-    while len(new_key) < len(plaintext):
-        new_key += keyword
-    new_key = [i for i in new_key.lower()]
-    for i in range(len(new_key)):
-        new_key[i] = ord(new_key[i]) - ord('a')
+    key = keyword
+    while len(key) < len(plaintext):
+        key += keyword
+    new_key = list(key.lower())
+    for i, char in enumerate(new_key):
+        new_key[i] = int(ord(char) - ord("a"))  # type: ignore
     ciphertext = ""
-    for i in range(len(plaintext)):
+    for i, char in enumerate(plaintext):
         if plaintext[i].isalpha():
             if plaintext[i] == plaintext[i].upper():
-                ciphertext += alph_caps[(alph_caps.index(plaintext[i], 0, len(alph_caps)) + int(new_key[i])) % len(alph_caps)]
+                length = len(alph_caps)
+                index = (alph_caps.index(char, 0, length) + new_key[i]) % length  # type: ignore
+                ciphertext += alph_caps[index]
             else:
-                ciphertext += alph_small[(alph_small.index(plaintext[i], 0, len(alph_small)) + int(new_key[i])) % len(alph_small)]
+                length = len(alph_caps)
+                index = (alph_small.index(char, 0, length) + new_key[i]) % length  # type: ignore
+                ciphertext += alph_small[index]
         else:
             ciphertext += plaintext[i]
     return ciphertext
@@ -39,23 +46,27 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     >>> decrypt_vigenere("LXFOPVEFRNHR", "LEMON")
     'ATTACKATDAWN'
     """
-    alph_caps = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
-    alph_small = [chr(i) for i in range(ord('a'), ord('z') + 1)]
+    alph_caps = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
+    alph_small = [chr(i) for i in range(ord("a"), ord("z") + 1)]
 
-    new_key = keyword
-    while len(new_key) < len(ciphertext):
-        new_key += keyword
-    new_key = [i for i in new_key.lower()]
-    for i in range(len(new_key)):
-        new_key[i] = ord(new_key[i]) - ord('a')
+    key = keyword
+    while len(key) < len(ciphertext):
+        key += keyword
+    new_key = list(key.lower())
+    for i, char in enumerate(new_key):
+        new_key[i] = int(ord(char) - ord("a"))  # type: ignore
 
     plaintext = ""
-    for i in range(len(ciphertext)):
+    for i, char in enumerate(ciphertext):
         if ciphertext[i].isalpha():
             if ciphertext[i] == ciphertext[i].upper():
-                plaintext += alph_caps[(alph_caps.index(ciphertext[i], 0, len(alph_caps)) - int(new_key[i])) % len(alph_caps)]
+                length = len(alph_caps)
+                index = (alph_caps.index(char, 0, length) - new_key[i]) % length  # type: ignore
+                plaintext += alph_caps[index]
             else:
-                plaintext += alph_small[(alph_small.index(ciphertext[i], 0, len(alph_small)) - int(new_key[i])) % len(alph_small)]
+                length = len(alph_small)
+                index = (alph_small.index(char, 0, length) - new_key[i]) % length  # type: ignore
+                plaintext += alph_small[index]
         else:
             plaintext += ciphertext[i]
     return plaintext

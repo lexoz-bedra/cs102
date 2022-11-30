@@ -1,3 +1,6 @@
+"""caesar"""
+
+
 def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     """
     Encrypts plaintext using a Caesar cipher.
@@ -10,17 +13,19 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     >>> encrypt_caesar("")
     ''
     """
-    alph_caps = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
-    alph_small = [chr(i) for i in range(ord('a'), ord('z') + 1)]
+    alph_caps = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
+    alph_small = [chr(i) for i in range(ord("a"), ord("z") + 1)]
     ciphertext = ""
-    for ch in plaintext:
-        if ch.isalpha():
-            if ch == ch.upper():
-                ciphertext += alph_caps[(alph_caps.index(ch, 0, len(alph_caps)) + shift) % len(alph_caps)]
+    for i, char in enumerate(plaintext):
+        if plaintext[i].isalpha():
+            if plaintext[i] == plaintext[i].upper():
+                length = len(alph_caps)
+                ciphertext += alph_caps[(alph_caps.index(char, 0, length) + shift) % length]
             else:
-                ciphertext += alph_small[(alph_small.index(ch, 0, len(alph_small)) + shift) % len(alph_small)]
+                length = len(alph_caps)
+                ciphertext += alph_small[(alph_small.index(char, 0, length) + shift) % length]
         else:
-            ciphertext += ch
+            ciphertext += plaintext[i]
     return ciphertext
 
 
@@ -36,15 +41,17 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     >>> decrypt_caesar("")
     ''
     """
-    alph_caps = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
-    alph_small = [chr(i) for i in range(ord('a'), ord('z') + 1)]
+    alph_caps = [chr(i) for i in range(ord("A"), ord("Z") + 1)]
+    alph_small = [chr(i) for i in range(ord("a"), ord("z") + 1)]
     plaintext = ""
-    for ch in ciphertext:
-        if ch.isalpha():
-            if ch == ch.upper():
-                plaintext += alph_caps[(alph_caps.index(ch, 0, len(alph_caps)) - shift) % len(alph_caps)]
+    for i, char in enumerate(ciphertext):
+        if ciphertext[i].isalpha():
+            if ciphertext[i] == ciphertext[i].upper():
+                length = len(alph_caps)
+                plaintext += alph_caps[(alph_caps.index(char, 0, length) - shift) % length]
             else:
-                plaintext += alph_small[(alph_small.index(ch, 0, len(alph_small)) - shift) % len(alph_small)]
+                length = len(alph_small)
+                plaintext += alph_small[(alph_small.index(char, 0, length) - shift) % length]
         else:
-            plaintext += ch
+            plaintext += ciphertext[i]
     return plaintext
