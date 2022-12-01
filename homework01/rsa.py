@@ -69,34 +69,34 @@ def multiplicative_inverse(arg: int, phi: int) -> int:
     return arr[0][5] % phi
 
 
-def generate_keypair(num_1: int, num_2: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
+def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
     """generates keys"""
-    if not (is_prime(num_1) and is_prime(num_2)):
+    if not (is_prime(p) and is_prime(q)):
         raise ValueError("Both numbers must be prime.")
-    if num_1 == num_2:
+    if p == q:
         raise ValueError("p and q cannot be equal")
 
     # n = pq
-    num_2 = num_1 * num_2
+    n = p * q
 
     # phi = (p-1)(q-1)
-    phi = (num_1 - 1) * (num_2 - 1)
+    phi = (p - 1) * (q - 1)
 
     # Choose an integer e such that e and phi(n) are coprime
-    arg = random.randrange(1, phi)
+    e = random.randrange(1, phi)
 
     # Use Euclid's Algorithm to verify that e and phi(n) are coprime
-    divider = gcd(arg, phi)
+    divider = gcd(e, phi)
     while divider != 1:
-        arg = random.randrange(1, phi)
-        divider = gcd(arg, phi)
+        e = random.randrange(1, phi)
+        divider = gcd(e, phi)
 
     # Use Extended Euclid's Algorithm to generate the private key
-    inv = multiplicative_inverse(arg, phi)
+    d = multiplicative_inverse(e, phi)
 
     # Return public and private keypair
     # Public key is (e, n) and private key is (d, n)
-    return (arg, num_2), (inv, num_2)
+    return (e, n), (d, n)
 
 
 def encrypt(packed_key: tp.Tuple[int, int], plaintext: str) -> tp.List[int]:
