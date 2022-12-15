@@ -192,7 +192,7 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     div = len(grid) // 9
     gr = []
     for i in range(div):
-        gr.append(grid[i * div: (i + 1) * div])
+        gr.append(grid[i * div : (i + 1) * div])
     solve(gr)
     for i in range(81 - N):
         row = random.randint(0, 8)
