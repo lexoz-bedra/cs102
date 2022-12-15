@@ -42,9 +42,7 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     length = len(values)
     for i in range(0, length, n):
         arr = []
-        for j in range(n):
-            temp = i
-            arr.append(values[temp + j])
+        arr += [values[i + j] for j in range(n)]
         res.append(arr)
     return res
 
@@ -83,44 +81,8 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    row, col = pos
-    res = []
-    if col <= 2 and row <= 2:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i][j])
-    elif col <= 2 and 2 < row <= 5:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i + 3][j])
-    elif col <= 2 and 5 < row <= 8:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i + 6][j])
-    elif 2 < col <= 5 and row <= 2:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i][j + 3])
-    elif 2 < col <= 5 and 2 < row <= 5:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i + 3][j + 3])
-    elif 2 < col <= 5 and 5 < row <= 8:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i + 6][j + 3])
-    elif 5 < col <= 8 and row <= 2:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i][j + 6])
-    elif 5 < col <= 8 and 2 < row <= 5:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i + 3][j + 6])
-    elif 5 < col <= 8 and 5 < row <= 8:
-        for i in range(3):
-            for j in range(3):
-                res.append(grid[i + 6][j + 6])
+    k = int(len(grid[0]) ** 0.5)
+    res = [grid[i + pos[0] // k * k][j + pos[1] // k * k] for i in range(k) for j in range(k)]
     return res
 
 
@@ -133,19 +95,11 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    i = 0
-    j = 0
-    k = 10
-    l = 10
-    while grid[i][j] != ".":
-        if j < len(grid[0]) - 1:
-            j += 1
-        elif j == len(grid[0]) - 1:
-            j = 0
-            i += 1
-        if i == (len(grid)):
-            return k, l
-    return i, j
+    for i, row in enumerate(grid):
+        for j, cell in enumerate(grid[i]):
+            if cell == ".":
+                return i, j
+    return None
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
@@ -158,13 +112,7 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
-    res = set()
-    col = set(get_col(grid, pos))
-    row = set(get_row(grid, pos))
-    block = set(get_block(grid, pos))
-    for i in range(1, 10):
-        if str(i) not in col | row | block:
-            res.add(str(i))
+    res = set("123456789") - set(get_col(grid, pos)) - set(get_row(grid, pos)) - set(get_block(grid, pos))
     return res
 
 
@@ -181,10 +129,10 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
     pos = find_empty_positions(grid)
-    if pos == (10, 10):
+    if pos is None:
         return grid
     n, m = find_empty_positions(grid)  # type: ignore
-    res = find_possible_values(grid, pos)  # type: ignore
+    res = find_possible_values(grid, pos)
     for i in res:
         grid[n][m] = str(i)
         if solve(grid) is not None:
@@ -205,29 +153,16 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     >>> check_solution(solution)
     True
     """
-    flag = 0
-    for i in range(0, 9):
-        for j in range(0, 9):
-            if solution[i][j] == ".":
+    for i, row in enumerate(solution):
+        for j, col in enumerate(solution):
+            pos = (i, j)
+            if (
+                (set(get_col(solution, pos)) != set("123456789"))
+                or (set(get_row(solution, pos)) != set("123456789"))
+                or (set(get_block(solution, pos)) != set("123456789"))
+            ):
                 return False
-            if i % 3 == 0 or i == 0:
-                col = get_col(solution, (i, j))
-                row = get_row(solution, (i, j))
-                block = get_block(solution, (i, j))
-                part: tp.List[str] = []
-                for bp in block:
-                    part.extend(bp)
-                cols = set(col)
-                rows = set(row)
-                parts = set(part)
-                if len(cols) == len(col) and len(rows) == len(row) and len(parts) == len(part):
-                    flag = 1
-                if flag == 1:
-                    continue
-                return False
-    if flag == 1:
-        return True
-    return False
+    return True
 
 
 def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
@@ -251,28 +186,22 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    grid: tp.List[tp.List[str]] = [[]]
-    arr = []
-    for i in range(1, 10):
-        arr.append(str(i))
-    for j in range(9):
-        grid[0].append(random.choice(arr))
-        arr.remove(grid[0][j])
-    for q in range(1, 9):
-        grid.append([])
-        for _ in range(9):
-            grid[q].append(".")
-    solve(grid)
-    n = 81
-    if N > 81:
-        return grid
-
-    while n != N:
-        a, b = random.randint(0, 8), random.randint(0, 8)
-        if grid[a][b] != ".":
-            grid[a][b] = "."
-            n -= 1
-    return grid
+    grid = []
+    for i in range(81):
+        grid.append(".")
+    div = len(grid) // 9
+    gr = []
+    for i in range(div):
+        gr.append(grid[i * div: (i + 1) * div])
+    solve(gr)
+    for i in range(81 - N):
+        row = random.randint(0, 8)
+        col = random.randint(0, 8)
+        while gr[row][col] == ".":
+            row = random.randint(0, 8)
+            col = random.randint(0, 8)
+        gr[row][col] = "."
+    return gr
 
 
 if __name__ == "__main__":
