@@ -2,16 +2,14 @@ from copy import deepcopy
 from random import choice, randint
 from typing import List, Optional, Tuple, Union
 
-import pandas as pd
+import pandas as pd  # type: ignore
 
 
 def create_grid(rows: int, cols: int) -> List[List[Union[str, int]]]:
     return [["■"] * cols for _ in range(rows)]
 
 
-def remove_wall(
-    grid: List[List[Union[str, int]]], coord: Tuple[int, int]
-) -> List[List[Union[str, int]]]:
+def remove_wall(grid: List[List[Union[str, int]]], coord: Tuple[int, int]) -> List[List[Union[str, int]]]:
     """
 
     :param grid:
@@ -25,22 +23,20 @@ def remove_wall(
     if y == 1 and x == row:
         pass
     elif y > 1 and x == row:
-        grid[y - 1][x] = ' '
+        grid[y - 1][x] = " "
     elif y == 1 and x < row:
-        grid[y][x + 1] = ' '
+        grid[y][x + 1] = " "
     elif y > 1 and x < row:
         match direction:
             case 0:
-                grid[y - 1][x] = ' '
+                grid[y - 1][x] = " "
             case 1:
-                grid[y][x + 1] = ' '
+                grid[y][x + 1] = " "
 
     return grid
 
 
-def bin_tree_maze(
-    rows: int, cols: int, random_exit: bool = True
-) -> List[List[Union[str, int]]]:
+def bin_tree_maze(rows: int, cols: int, random_exit: bool = True) -> List[List[Union[str, int]]]:
     """
 
     :param rows:
@@ -96,7 +92,7 @@ def get_exits(grid: List[List[Union[str, int]]]) -> List[Tuple[int, int]]:
     exits = []
     for y, row in enumerate(grid):
         for x, _ in enumerate(row):
-            if grid[y][x] == 'X':
+            if grid[y][x] == "X":
                 exits.append((y, x))
     return exits
 
@@ -114,13 +110,13 @@ def make_step(grid: List[List[Union[str, int]]], k: int) -> List[List[Union[str,
             if cell == k:
                 print(y, x)
                 m = k + 1
-                if x != 0 and (grid[y][x - 1] == 0 or grid[y][x - 1] == ' '):
+                if x != 0 and (grid[y][x - 1] == 0 or grid[y][x - 1] == " "):
                     grid[y][x - 1] = m
-                if x != len(row) - 1 and (grid[y][x + 1] == 0 or grid[y][x + 1] == ' '):
+                if x != len(row) - 1 and (grid[y][x + 1] == 0 or grid[y][x + 1] == " "):
                     grid[y][x + 1] = m
-                if y != 0 and (grid[y - 1][x] == 0 or grid[y - 1][x] == ' '):
+                if y != 0 and (grid[y - 1][x] == 0 or grid[y - 1][x] == " "):
                     grid[y - 1][x] = m
-                if y != len(grid) - 1 and (grid[y + 1][x] == 0 or grid[y + 1][x] == ' '):
+                if y != len(grid) - 1 and (grid[y + 1][x] == 0 or grid[y + 1][x] == " "):
                     grid[y + 1][x] = m
     return grid
 
@@ -182,17 +178,28 @@ def encircled_exit(grid: List[List[Union[str, int]]], coord: Tuple[int, int]) ->
 
     y, x = coord
     # углы
-    if x == y == 0 \
-            or x == 0 and y == len(grid) - 1 \
-            or y == 0 and x == len(grid[0]) - 1 \
-            or x == len(grid[0]) - 1 and y == len(grid) - 1:
+    if (
+        x == y == 0
+        or x == 0
+        and y == len(grid) - 1
+        or y == 0
+        and x == len(grid[0]) - 1
+        or x == len(grid[0]) - 1
+        and y == len(grid) - 1
+    ):
         return True
 
     # не углы (а стены)
-    if y == 0 and grid[y + 1][x] == '■' \
-            or x == 0 and grid[y][x + 1] == '■' \
-            or x == len(grid[0]) - 1 and grid[y][x - 1] == '■' \
-            or y == len(grid) - 1 and grid[y - 1][x] == '■':
+    if (
+        y == 0
+        and grid[y + 1][x] == "■"
+        or x == 0
+        and grid[y][x + 1] == "■"
+        or x == len(grid[0]) - 1
+        and grid[y][x - 1] == "■"
+        or y == len(grid) - 1
+        and grid[y - 1][x] == "■"
+    ):
         return True
     return False
 
@@ -253,7 +260,7 @@ def add_path_to_grid(
 
 
 if __name__ == "__main__":
-    #print(pd.DataFrame(bin_tree_maze(15, 15)))
+    # print(pd.DataFrame(bin_tree_maze(15, 15)))
     GRID = bin_tree_maze(15, 15)
     print(pd.DataFrame(GRID))
     _, PATH = solve_maze(GRID)
