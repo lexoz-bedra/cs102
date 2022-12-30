@@ -18,11 +18,9 @@ def remove_wall(grid: List[List[Union[str, int]]], coord: Tuple[int, int]) -> Li
     """
     row = len(grid[0]) - 2
     y, x = coord
-    options = [0, 1]  # 0 - вверх, 1 - вправо
-    direction = choice(options)
-    if y == 1 and x == row:
-        pass
-    elif y > 1 and x == row:
+    options = (0, 1)  # 0 - вверх, 1 - вправо
+    direction = choice(list(options))
+    if y > 1 and x == row:
         grid[y - 1][x] = " "
     elif y == 1 and x < row:
         grid[y][x + 1] = " "
@@ -56,7 +54,7 @@ def bin_tree_maze(rows: int, cols: int, random_exit: bool = True) -> List[List[U
 
     # стенки (работает нормально)
     for cell in empty_cells:
-        remove_wall(grid, cell)
+        grid = remove_wall(grid, cell)
 
     for i, _ in enumerate(grid):
         if grid[i][cols - 1] != "■":
@@ -91,8 +89,8 @@ def get_exits(grid: List[List[Union[str, int]]]) -> List[Tuple[int, int]]:
     """
     exits = []
     for y, row in enumerate(grid):
-        for x, _ in enumerate(row):
-            if grid[y][x] == "X":
+        for x, cell in enumerate(row):
+            if cell == "X":
                 exits.append((y, x))
     return exits
 
@@ -163,7 +161,7 @@ def shortest_path(
         x = way[-1][1]
         grid[y][x] = " "
         x_2, y_2 = way[-2][0], way[-2][1]
-        shortest_path(grid, (x_2, y_2))
+        way = shortest_path(grid, (x_2, y_2))  # type: ignore
 
     return way
 
@@ -236,7 +234,7 @@ def solve_maze(
 
     while grid[y_2][x_2] == 0:
         k += 1
-        make_step(grid, k)
+        grid = make_step(grid, k)
 
     return grid, shortest_path(grid, (y_2, x_2))
 
