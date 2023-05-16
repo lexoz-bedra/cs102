@@ -75,6 +75,8 @@ class TestHackernews(unittest.TestCase):
                 pass
             else:
                 pass
+
+
 @mock.patch("hackernews.session")
 def test_classify_news(self, session):
     try:

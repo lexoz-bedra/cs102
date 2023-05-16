@@ -41,10 +41,10 @@ def update_news():
     redirect("/news")
 
 
-@route("/classify")
+@route("/recommendations")
 def classify_news():
     s = session()
-    marked_news = s.query(News).filter(News.label is not None).all()
+    marked_news = s.query(News).filter(News.label != None).all()
     marked_news = [[new.title, new.label] for new in marked_news]
 
     x_train = [n[0] for n in marked_news]
@@ -53,7 +53,7 @@ def classify_news():
     model = NaiveBayesClassifier(alpha=1)
     model.fit(x_train, y_train)
 
-    news = s.query(News).filter(News.label is None).all()
+    news = s.query(News).filter(News.label == None).all()
     news_ids = [new.id for new in news]
     news = [new.title for new in news]
     predicts = model.predict(news)
@@ -67,6 +67,7 @@ def classify_news():
     for label in ["good", "maybe", "never"]:
         for id in classified_news[label]:
             rows.append(s.query(News).filter(News.id == id).first())
+
     return template("classification_template", rows=rows)
 
 
