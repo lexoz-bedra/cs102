@@ -4,7 +4,6 @@ import typing as tp
 import warnings
 
 import requests  # type: ignore
-
 from vkapi import config, session
 from vkapi.config import VK_CONFIG
 
