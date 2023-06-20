@@ -3,6 +3,7 @@ import statistics
 import typing as tp
 
 import numpy as np
+
 from homework08.vkapi.friends import get_friends
 
 

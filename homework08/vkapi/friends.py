@@ -4,6 +4,7 @@ import typing as tp
 import warnings
 
 import requests  # type: ignore
+
 from homework08.vkapi import config, session
 from homework08.vkapi.config import VK_CONFIG
 
@@ -64,8 +65,6 @@ def get_friends(
                 friends.append(new_dict)
     else:
         friends = people
-
-        fields_to_print = fields
 
     friends_response = FriendsResponse(count=len(friends), items=[friend for friend in friends])
     return friends_response
