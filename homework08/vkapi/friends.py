@@ -5,8 +5,8 @@ import warnings
 
 import requests  # type: ignore
 
-from homework08.vkapi import config, session  # type: ignore
-from homework08.vkapi.config import VK_CONFIG  # type: ignore
+from vkapi import config, session  # type: ignore
+from vkapi.config import VK_CONFIG  # type: ignore
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
@@ -58,7 +58,7 @@ def get_friends(
             try:
                 person["deactivated"]
             except KeyError:
-                new_dict = {key: person[key] for key in columns if key in person and person["can_access_closed"]}
+                new_dict = {key: person[key] for key in columns if key in person}
                 friends.append(new_dict)
     else:
         friends = people
