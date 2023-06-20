@@ -3,7 +3,6 @@ import statistics
 import typing as tp
 
 import numpy as np
-
 from vkapi.friends import get_friends  # type: ignore
 
 
