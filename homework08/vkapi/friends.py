@@ -4,8 +4,8 @@ import typing as tp
 import warnings
 
 import requests  # type: ignore
-from vkapi import config, session
-from vkapi.config import VK_CONFIG
+from homework08.vkapi import config, session
+from homework08.vkapi.config import VK_CONFIG
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
@@ -24,7 +24,10 @@ class FriendsResponse:
 
 
 def get_friends(
-    user_id: int = 505826062, count: int = 5000, offset: int = 0, fields: tp.Optional[tp.List[str]] = None
+    user_id: int = 505826062,
+    count: int = 5000,
+    offset: int = 0,
+    fields: tp.Optional[tp.List[str]] = None
 ) -> FriendsResponse:
     """
     Получить список идентификаторов друзей пользователя или расширенную информацию
@@ -40,6 +43,9 @@ def get_friends(
     access_token = VK_CONFIG["access_token"]
     v = VK_CONFIG["version"]
     user_id = user_id
+    fields = ", ".join(fields) if type(fields) == list else ""  # type: ignore
+    columns = ["id"] + fields.split(", ") if fields != "" else ["id"]  # type: ignore
+    friends = []
 
     query = (
         f"{domain}/friends.get?access_token={access_token}&user_id={user_id}&count={count}"
@@ -47,7 +53,22 @@ def get_friends(
     )
 
     response = requests.get(query)
-    return FriendsResponse(**response.json()["response"])
+    people = response.json()["response"]["items"]
+
+    if fields != "":
+        for person in people:
+            try:
+                person["deactivated"]
+            except KeyError:
+                new_dict = {key: person[key] for key in columns if key in person and person["can_access_closed"]}
+                friends.append(new_dict)
+    else:
+        friends = people
+
+        fields_to_print = fields
+
+    friends_response = FriendsResponse(count=len(friends), items=[friend for friend in friends])
+    return friends_response
 
 
 class MutualFriends(tp.TypedDict):
@@ -125,3 +146,7 @@ def get_mutual(
                 return check["response"]
             except KeyError:
                 return []  # type: ignore
+
+
+if __name__ == '__main__':
+    print(get_friends(user_id=505826062, fields=['first_name']).items)

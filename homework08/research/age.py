@@ -3,7 +3,7 @@ import statistics
 import typing as tp
 
 import numpy as np
-from vkapi.friends import get_friends
+from homework08.vkapi.friends import get_friends
 
 
 def age_predict(user_id: int) -> tp.Optional[float]:
@@ -18,7 +18,7 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     year = dt.date.today().year
     age = []
 
-    friends = get_friends(user_id=user_id)
+    friends = get_friends(user_id=user_id, fields=["bdate"])
     for friend in friends:
         try:
             bday = int(friend["bdate"].split(".")[2])
@@ -26,6 +26,10 @@ def age_predict(user_id: int) -> tp.Optional[float]:
         except (AttributeError, IndexError, KeyError):
             pass
 
-    if np.isnan(round(np.median(np.array(age)), 1)):
+    if np.isnan(round(float(np.median(np.array(age))), 1)):
         return None
-    return round(np.median(np.array(age)), 1)
+    return round(float(np.median(np.array(age))), 1)
+
+
+if __name__ == '__main__':
+    print(age_predict(user_id=505826062))
