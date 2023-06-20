@@ -4,8 +4,8 @@ import typing as tp
 import warnings
 
 import requests  # type: ignore
-from vkapi import config, session  # type: ignore
-from vkapi.config import VK_CONFIG  # type: ignore
+from homework08.vkapi import config, session  # type: ignore
+from homework08.vkapi.config import VK_CONFIG  # type: ignore
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]

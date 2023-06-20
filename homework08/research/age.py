@@ -3,7 +3,7 @@ import statistics
 import typing as tp
 
 import numpy as np
-from vkapi.friends import get_friends  # type: ignore
+from homework08.vkapi.friends import get_friends  # type: ignore
 
 
 def age_predict(user_id: int) -> tp.Optional[float]:

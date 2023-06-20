@@ -5,7 +5,7 @@ import community as community_louvain  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 import networkx as nx  # type: ignore
 import pandas as pd  # type: ignore
-from vkapi.friends import get_friends, get_mutual  # type: ignore
+from homework08.vkapi.friends import get_friends, get_mutual  # type: ignore
 
 
 def ego_network(
@@ -85,5 +85,5 @@ def describe_communities(
 
 
 if __name__ == "__main__":
-    net = ego_network(user_id=505826062, friends=get_friends(user_id=505826062).items)
-    plot_communities(net)
+    net = ego_network(user_id=505826062, friends=get_friends(user_id=505826062).items)  # type: ignore
+    plot_ego_network(net)
