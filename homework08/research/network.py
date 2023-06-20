@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt  # type: ignore
 import networkx as nx  # type: ignore
 import pandas as pd  # type: ignore
 
-from homework08.vkapi.friends import get_friends, get_mutual
+from homework08.vkapi.friends import get_friends, get_mutual  # type: ignore
 
 
 def ego_network(
@@ -85,6 +85,6 @@ def describe_communities(
     return pd.DataFrame(data=data, columns=["cluster"] + fields)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     net = ego_network(user_id=505826062, friends=get_friends(user_id=505826062).items)
     plot_communities(net)

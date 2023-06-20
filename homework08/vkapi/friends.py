@@ -5,8 +5,8 @@ import warnings
 
 import requests  # type: ignore
 
-from homework08.vkapi import config, session
-from homework08.vkapi.config import VK_CONFIG
+from homework08.vkapi import config, session  # type: ignore
+from homework08.vkapi.config import VK_CONFIG  # type: ignore
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
@@ -25,10 +25,7 @@ class FriendsResponse:
 
 
 def get_friends(
-    user_id: int = 505826062,
-    count: int = 5000,
-    offset: int = 0,
-    fields: tp.Optional[tp.List[str]] = None
+    user_id: int = 505826062, count: int = 5000, offset: int = 0, fields: tp.Optional[tp.List[str]] = None
 ) -> FriendsResponse:
     """
     Получить список идентификаторов друзей пользователя или расширенную информацию
@@ -147,5 +144,5 @@ def get_mutual(
                 return []  # type: ignore
 
 
-if __name__ == '__main__':
-    print(get_friends(user_id=505826062, fields=['first_name']).items)
+if __name__ == "__main__":
+    print(get_friends(user_id=505826062, fields=["first_name"]).items)

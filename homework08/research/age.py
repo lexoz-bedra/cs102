@@ -4,7 +4,7 @@ import typing as tp
 
 import numpy as np
 
-from homework08.vkapi.friends import get_friends
+from homework08.vkapi.friends import get_friends  # type: ignore
 
 
 def age_predict(user_id: int) -> tp.Optional[float]:
@@ -32,5 +32,5 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     return round(float(np.median(np.array(age))), 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(age_predict(user_id=505826062))
