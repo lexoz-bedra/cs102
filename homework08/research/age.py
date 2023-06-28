@@ -32,4 +32,4 @@ def age_predict(user_id: int) -> tp.Optional[float]:
 
 
 if __name__ == "__main__":
-    print(age_predict(user_id=505826062))
+    print(age_predict(user_id=189183825))
